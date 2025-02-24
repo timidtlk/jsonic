@@ -31,21 +31,18 @@ public abstract class Scene {
     }
 
     public void update() {
+        if (!events.empty()) {
+            events.getFirst().update();
+            if (events.getFirst().isEnd()) {
+                events.pop();
+            }
+        }
         for (GameObject object : objects.values()) {
             object.update();
         }
         for (Entity entity : entities.values()) {
             entity.update();
         }
-
-        if (!events.empty()) {
-            Event event = events.get(0);
-            event.update();
-            if (event.isEnd()) {
-                events.pop();
-            }
-        }
-
         if (hasCamera()) {
             camera.update();
         }

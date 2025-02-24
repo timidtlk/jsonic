@@ -10,9 +10,8 @@ import me.timidtlk.events.SegaLogo;
 public class SegaScene extends Scene {
     public SegaScene(GamePanel gp) {
         super(gp);
-
-        events.push(new FadeOutEvent(0.01f, Color.BLACK, gp));
+        // events.push(new FadeOutEvent(1f, Color.BLACK, gp));
         events.push(new SegaLogo(gp));
-        events.push(new FadeInEvent(0.01f, Color.BLACK, gp));
+        // events.push(new FadeInEvent(1f, Color.BLACK, gp));
     }
 }

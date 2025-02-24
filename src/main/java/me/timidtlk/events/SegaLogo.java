@@ -47,7 +47,7 @@ public class SegaLogo extends Event {
             segaLogoFrames[23] = segaLogo.getSprite(3, 5);
             segaLogoFrames[24] = segaLogo.getSprite(0, 6);
 
-            animation = new Animation(segaLogoFrames, 10);
+            animation = new Animation(segaLogoFrames, 2);
             animation.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,8 +58,8 @@ public class SegaLogo extends Event {
     public void update() {
         animation.update();
 
-        if (animation.getCurrentFrame() == animation.getFrameCount() - 1) {
-            end = true;
+        if (animation.getCurrentFrame() == 24) {
+            animation.stop();
         }
     }
 

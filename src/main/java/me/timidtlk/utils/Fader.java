@@ -6,30 +6,22 @@ import java.awt.Graphics2D;
 import me.timidtlk.core.GamePanel;
 
 public class Fader {
-    private float alpha;
-    private float targetAlpha;
+    private int alpha;
+    private int targetAlpha;
     private float fadeSpeed;
     private Color color;
     private GamePanel gp;
 
-    public Fader(float fadeSpeed, Color color, GamePanel gp) {
+    public Fader(float fadeSpeed, Color color, GamePanel gp, int alpha, int targetAlpha) {
         this.gp = gp;
         this.color = color;
         this.fadeSpeed = fadeSpeed;
-        alpha = 0;
-        targetAlpha = 0;
-    }
-
-    public void fadeIn() {
-        targetAlpha = 255;
-    }
-
-    public void fadeOut() {
-        targetAlpha = 0;
+        this.targetAlpha = targetAlpha;
+        this.alpha = alpha;
     }
 
     public void update() {
-        alpha = alpha + (targetAlpha - alpha) * fadeSpeed;
+        alpha = (int)Math.round(alpha + (targetAlpha - alpha) * fadeSpeed);
     }
 
     public void draw(Graphics2D g2) {

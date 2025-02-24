@@ -12,12 +12,14 @@ public class FadeOutEvent extends Event {
 
     public FadeOutEvent(float fadeSpeed, Color color, GamePanel gp) {
         super();
-        this.fader = new Fader(fadeSpeed, color, gp);
-        fader.fadeOut();
+        this.fader = new Fader(fadeSpeed, color, gp, 0, 255);
     }
     @Override
     public void update() {
         fader.update();
+        if (fader.getAlpha() == 0) {
+            end = true;
+        }
     }
 
     @Override
