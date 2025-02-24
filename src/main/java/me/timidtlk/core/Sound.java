@@ -15,6 +15,7 @@ public class Sound {
 
         soundURL[0] = getClass().getClassLoader().getResource("sounds/player/jump.wav");
         soundURL[1] = getClass().getClassLoader().getResource("sounds/player/skid.wav");
+        soundURL[2] = getClass().getClassLoader().getResource("sounds/player/roll.wav");
     }
 
     public void setFile(int i) {

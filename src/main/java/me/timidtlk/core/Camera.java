@@ -5,16 +5,19 @@ import java.awt.Graphics2D;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import me.timidtlk.entities.Player;
 
 @Getter
 @Setter
+@RequiredArgsConstructor
 @AllArgsConstructor
 public class Camera {
     private double x, y;
-    private GamePanel gp;
-    private Player player;
+    @NonNull private GamePanel gp;
+    @NonNull private Player player;
 
     private final double HORIZONTAL_FOCAL_POINT = 160;
     private final double VERTICAL_FOCAL_POINT = 96;
@@ -22,7 +25,7 @@ public class Camera {
     private final double VERTICAL_SPEED_CAP = 16;
     private final double VERTICAL_SPEED_CAP_FAST = 24;
     private final double VERTICAL_SPEED_CAP_SLOW = 6;
-    private final double VERTICAL_SPEED_CAP_SHIFTED = 2;
+    private final double VERTICAL_SPEED_CAP_SHIFTED = 2 ;
 
     private final double LEFT_BORDER = 144;
     private final double RIGHT_BORDER = 160;

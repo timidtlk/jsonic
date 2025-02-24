@@ -24,6 +24,9 @@ public class Player extends Entity {
     private final double GRAVITY_FORCE = 0.21875;
     private final double TOP_SPEED = 6.0;
     private final double JUMP_FORCE = 6.5;
+    private final double ROLL_FRICTION_SPEED = 0.0234375;
+    private final double ROLL_DECELERATION_SPEED = 0.125;
+    private final double ROLL_TOP_SPEED = 16.0;
 
     Sprite sprite;
     GamePanel gp;
@@ -40,6 +43,8 @@ public class Player extends Entity {
     private boolean onBorder;
     private boolean skidding;
     private boolean lastTimeSkid;
+    private boolean rolling;
+    private boolean lastTimeRoll;
 
     public Animation actualAnimation;
 
@@ -122,6 +127,12 @@ public class Player extends Entity {
     public void update() {
 
         actualAnimation.update();
+
+        if (isRolling() && !lastTimeRoll) {
+            gp.getSound().setFile(2);
+            gp.getSound().play();
+        }
+        lastTimeRoll = rolling;
         
         if (isSkidding() && !lastTimeSkid && isOnGround() && !isJumping() && Math.abs(speedX) > 1) {
             gp.getSound().setFile(1);
@@ -146,6 +157,7 @@ public class Player extends Entity {
     private void handleAnimations() {
         if (isOnGround()) {
             if (speedX == 0) {
+                rolling = false;
                 if (controller.isUp()) {
                     actualAnimation = animations.get("lookUp");
                     actualAnimation.reset();
@@ -162,20 +174,29 @@ public class Player extends Entity {
                     actualAnimation.reset();
                     actualAnimation.start();
                 }
+            } else if (controller.isDown() && Math.abs(speedX) > 1) {
+                actualAnimation.reset();
+                rolling = true;
+            } else if (isRolling()) {
+                actualAnimation = animations.get("jump");
+                actualAnimation.setFrameDelay((int)Math.floor(Math.max(0, 4-Math.abs(speedX))));
+                actualAnimation.start(); 
             } else if (isSkidding()) {
                 actualAnimation = animations.get("skidding");
                 actualAnimation.start();
-            } else if (Math.abs(speedX) < 6) {
+            } else if (Math.abs(speedX) < 6 && !isRolling()) {
                 actualAnimation = animations.get("jog");
                 actualAnimation.setFrameDelay((int)Math.floor(Math.max(0, 8-Math.abs(speedX))));
                 actualAnimation.start();
             } else {
                 actualAnimation = animations.get("run");
+                actualAnimation.setFrameDelay((int)Math.floor(Math.max(0, 8-Math.abs(speedX))));
                 actualAnimation.start();
             }
         } else {
             if (isJumping()) {
                 actualAnimation = animations.get("jump");
+                actualAnimation.setFrameDelay((int)Math.floor(Math.max(0, 4-Math.abs(speedX))));
                 actualAnimation.start();
             }
         }
@@ -183,44 +204,67 @@ public class Player extends Entity {
 
     private void handleSpeed() {
         if(!(controller.isLeft() && controller.isRight())) { // dealing with press left and right at the same time
-            if (controller.isLeft()) {
-                direction = "left";
-    
-                if (speedX > 0) {
-                    skidding = true;
-                    speedX -= (isOnGround()) ? DECELERATION_SPEED : AIR_ACCELERATION_SPEED;
-                    if (speedX <= 0)
-                        speedX = -0.5;
-                } else if (speedX > -TOP_SPEED) {
-                    skidding = false;
-                    speedX -= (isOnGround()) ? ACCELERATION_SPEED : AIR_ACCELERATION_SPEED;
-                    if (speedX <= -TOP_SPEED)
-                        speedX = -TOP_SPEED;
+            if (isRolling()) {
+                if (controller.isLeft()) {
+                    if (speedX > 0) {
+                        speedX -= ROLL_DECELERATION_SPEED + ROLL_FRICTION_SPEED;
+                        if (speedX <= 0) {
+                            rolling = false;
+                        }
+                    }
+                } else if (controller.isRight()) {
+                    if (speedX < 0) {
+                        speedX += ROLL_DECELERATION_SPEED + ROLL_FRICTION_SPEED;
+                        if (speedX >= 0) {
+                            rolling = false;
+                        }
+                    }
+                } else {
+                    speedX -= Math.min(Math.abs(speedX), ROLL_FRICTION_SPEED) * Math.signum(speedX);
+                }
+
+                if (Math.abs(speedX) > ROLL_TOP_SPEED) {
+                    speedX = ROLL_TOP_SPEED * Math.signum(speedX);
+                }
+            } else {
+                if (controller.isLeft()) {
+                    direction = "left";
+        
+                    if (speedX > 0) {
+                        skidding = true;
+                        speedX -= (isOnGround()) ? DECELERATION_SPEED : AIR_ACCELERATION_SPEED;
+                        if (speedX <= 0)
+                            speedX = -0.5;
+                    } else if (speedX > -TOP_SPEED) {
+                        skidding = false;
+                        speedX -= (isOnGround()) ? ACCELERATION_SPEED : AIR_ACCELERATION_SPEED;
+                        if (speedX <= -TOP_SPEED)
+                            speedX = -TOP_SPEED;
+                    }
+                }
+        
+                if (controller.isRight()) {
+                    direction = "right";
+        
+                    if (speedX < 0) {
+                        skidding = true;
+                        speedX += (isOnGround()) ? DECELERATION_SPEED : AIR_ACCELERATION_SPEED;
+                        if (speedX >= 0)
+                            speedX = 0.5;
+                    } else if (speedX < TOP_SPEED) {
+                        skidding = false;
+                        speedX += (isOnGround()) ? ACCELERATION_SPEED : AIR_ACCELERATION_SPEED;
+                        if (speedX >= TOP_SPEED)
+                            speedX = TOP_SPEED;
+                    }
+                }
+                if ((!controller.isLeft() && !controller.isRight()) || (controller.isLeft() && controller.isRight()))
+                    speedX -= Math.min(Math.abs(speedX), FRICTION_SPEED) * Math.signum(speedX);
+
+                if (!onGround && speedY < 0 && speedY > -4) {
+                    speedX -= (speedX / 0.125) / 256;
                 }
             }
-    
-            if (controller.isRight()) {
-                direction = "right";
-    
-                if (speedX < 0) {
-                    skidding = true;
-                    speedX += (isOnGround()) ? DECELERATION_SPEED : AIR_ACCELERATION_SPEED;
-                    if (speedX >= 0)
-                        speedX = 0.5;
-                } else if (speedX < TOP_SPEED) {
-                    skidding = false;
-                    speedX += (isOnGround()) ? ACCELERATION_SPEED : AIR_ACCELERATION_SPEED;
-                    if (speedX >= TOP_SPEED)
-                        speedX = TOP_SPEED;
-                }
-            }
-        }
-
-        if ((!controller.isLeft() && !controller.isRight()) || (controller.isLeft() && controller.isRight()))
-            speedX -= Math.min(Math.abs(speedX), FRICTION_SPEED) * Math.signum(speedX);
-
-        if (!onGround && speedY < 0 && speedY > -4) {
-            speedX -= (speedX / 0.125) / 256;
         }
     }
 

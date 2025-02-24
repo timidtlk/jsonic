@@ -10,7 +10,7 @@ public class Main extends JFrame {
     Main() {
         super("Sonic The Hedgehog");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
+        setResizable(true);
 
         panel = new GamePanel();
         panel.startGameThread();

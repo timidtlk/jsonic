@@ -4,12 +4,16 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import lombok.Getter;
 import me.timidtlk.entities.Player;
 import me.timidtlk.scenes.Scene;
+import me.timidtlk.scenes.SegaScene;
 import me.timidtlk.scenes.TestLevel;
 
 @Getter
@@ -24,14 +28,12 @@ public class GamePanel extends JPanel implements Runnable {
     private KeyHandler keyH;
     private int actualFPS = 0;
     private Scene actualScene;
-    private Camera camera;
     private Sound sound;
 
     public GamePanel() {
         controller = new Controller();
         keyH = new KeyHandler(controller);
-        actualScene = new TestLevel(this);
-        camera = new Camera(0.0, 0.0, this, (Player) actualScene.getEntities().get("player"));
+        actualScene = new SegaScene(this);
         sound = new Sound();
 
         setBackground(Color.BLACK);
@@ -80,7 +82,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
         actualScene.update();
-        camera.update();
     }
 
     @Override
@@ -88,16 +89,25 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        g2.translate(-camera.getX(), -camera.getY());
+        if (actualScene.hasCamera()) {
+            Camera camera = actualScene.getCamera();
+            g2.translate(-camera.getX(), -camera.getY());
+        }
 
         actualScene.draw(g2);
 
-        g2.translate(camera.getX(), camera.getY());
+        if (actualScene.hasCamera()) {
+            Camera camera = actualScene.getCamera();
+            g2.translate(camera.getX(), camera.getY());
+        }
 
         if (keyH.isDebug()) {
             g2.setColor(Color.WHITE);
             g2.drawString(String.format("FPS: %d", actualFPS), 0, 10);
-            camera.drawDebug(g2);
+            if (actualScene.hasCamera()) {
+                Camera camera = actualScene.getCamera();
+                camera.drawDebug(g2);
+            }
         }
     }
 }
