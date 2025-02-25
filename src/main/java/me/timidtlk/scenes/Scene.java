@@ -1,5 +1,6 @@
 package me.timidtlk.scenes;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Stack;
@@ -10,9 +11,10 @@ import me.timidtlk.core.GamePanel;
 import me.timidtlk.entities.Entity;
 import me.timidtlk.events.Event;
 import me.timidtlk.objects.GameObject;
+import me.timidtlk.utils.Drawable;
 
 @Getter
-public abstract class Scene {
+public abstract class Scene implements Drawable {
     protected HashMap<String, GameObject> objects;
     protected HashMap<String, Entity> entities;
     protected Stack<Event> events;
@@ -30,11 +32,12 @@ public abstract class Scene {
         return camera != null;
     }
 
+    @Override
     public void update() {
         if (!events.empty()) {
             events.getFirst().update();
             if (events.getFirst().isEnd()) {
-                events.pop();
+                events.remove(events.getFirst());
             }
         }
         for (GameObject object : objects.values()) {
@@ -48,6 +51,7 @@ public abstract class Scene {
         }
     }
 
+    @Override
     public void draw(Graphics2D g2) {
         for (GameObject object : objects.values()) {
             object.draw(g2);
@@ -58,6 +62,13 @@ public abstract class Scene {
         if (!events.empty()) {
             for (Event event : events) {
                 event.draw(g2);
+            }
+        }
+
+        g2.setColor(Color.RED);
+        if (gp.getKeyH().isDebug()) {
+            for (int index = 0; index < events.size(); index++) {
+                g2.drawString(events.get(index).getClass().getSimpleName(), 10, 20 + 10 * index);
             }
         }
     }

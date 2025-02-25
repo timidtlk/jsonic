@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import me.timidtlk.core.GamePanel;
+import me.timidtlk.core.Sound;
 import me.timidtlk.core.animation.Animation;
 import me.timidtlk.core.animation.Sprite;
 
@@ -12,11 +13,14 @@ public class SegaLogo extends Event {
     Sprite segaLogo;
     Animation animation;
     GamePanel gp;
+    Sound sound;
+    boolean audioPlayed = false;
 
     public SegaLogo(GamePanel gp) {
         super();
 
         this.gp = gp;
+        this.sound = new Sound();
         segaLogo = new Sprite("misc/sega.png", gp.getSCREEN_WIDTH(), gp.getSCREEN_HEIGHT());
 
         BufferedImage[] segaLogoFrames = new BufferedImage[25];
@@ -58,8 +62,20 @@ public class SegaLogo extends Event {
     public void update() {
         animation.update();
 
-        if (animation.getCurrentFrame() == 24) {
+        if (animation.getCurrentFrame() == 24 && !audioPlayed) {
+            audioPlayed = true;
             animation.stop();
+            sound.setFile(3);
+            sound.play();
+        } else if (audioPlayed) {
+            if (sound.isFinished()) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                end = true;
+            }
         }
     }
 

@@ -13,13 +13,13 @@ public class Main extends JFrame {
         setResizable(true);
 
         panel = new GamePanel();
-        panel.startGameThread();
-
+        
         add(panel);
         pack();
-
+        
         setLocationRelativeTo(null);
         setVisible(true);
+        panel.startGameThread();
     }
 
     public static void main(String[] args) {

@@ -16,6 +16,7 @@ public class Sound {
         soundURL[0] = getClass().getClassLoader().getResource("sounds/player/jump.wav");
         soundURL[1] = getClass().getClassLoader().getResource("sounds/player/skid.wav");
         soundURL[2] = getClass().getClassLoader().getResource("sounds/player/roll.wav");
+        soundURL[3] = getClass().getClassLoader().getResource("sounds/misc/sega.wav");
     }
 
     public void setFile(int i) {
@@ -35,5 +36,8 @@ public class Sound {
     }
     public void stop() {
         clip.stop();
+    }
+    public boolean isFinished() {
+        return !clip.isActive();
     }
 }
