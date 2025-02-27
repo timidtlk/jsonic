@@ -13,7 +13,7 @@ import javax.swing.Timer;
 import lombok.Getter;
 import me.timidtlk.entities.Player;
 import me.timidtlk.scenes.Scene;
-import me.timidtlk.scenes.SegaScene;
+import me.timidtlk.scenes.IntroScene;
 import me.timidtlk.scenes.TestLevel;
 
 @Getter
@@ -33,7 +33,7 @@ public class GamePanel extends JPanel implements Runnable {
     public GamePanel() {
         controller = new Controller();
         keyH = new KeyHandler(controller);
-        actualScene = new SegaScene(this);
+        actualScene = new IntroScene(this);
         sound = new Sound();
 
         setBackground(Color.BLACK);

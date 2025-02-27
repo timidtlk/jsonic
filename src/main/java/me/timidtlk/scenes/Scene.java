@@ -37,6 +37,7 @@ public abstract class Scene implements Drawable {
         if (!events.empty()) {
             events.getFirst().update();
             if (events.getFirst().isEnd()) {
+                events.push(events.getFirst());
                 events.remove(events.getFirst());
             }
         }

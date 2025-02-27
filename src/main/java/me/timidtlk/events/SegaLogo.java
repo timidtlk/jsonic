@@ -1,5 +1,7 @@
 package me.timidtlk.events;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -15,6 +17,8 @@ public class SegaLogo extends Event {
     GamePanel gp;
     Sound sound;
     boolean audioPlayed = false;
+    float alpha = 1f;
+    int count = 0;
 
     public SegaLogo(GamePanel gp) {
         super();
@@ -69,19 +73,33 @@ public class SegaLogo extends Event {
             sound.play();
         } else if (audioPlayed) {
             if (sound.isFinished()) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (count == 0) {
+                    try {
+                        Thread.sleep(150);
+                        count++;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    alpha = alpha + (0f - alpha) * .1f;
+                    if (Math.round(alpha * 100) == 0f) {
+                        end = true;
+                    }
                 }
-                end = true;
             }
         }
     }
 
     @Override
     public void draw(Graphics2D g2) {
+        AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+        g2.setComposite(ac);
         g2.drawImage(animation.getSprite(), 0, 0, null);
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+        if (gp.getKeyH().isDebug()) {
+            g2.setColor(Color.GREEN);
+            g2.drawString("Sega Logo Alpha: " + alpha, 10, 40);
+        }
     }
     
 }
