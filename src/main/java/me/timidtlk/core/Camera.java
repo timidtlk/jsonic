@@ -12,31 +12,44 @@ import me.timidtlk.entities.Player;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @AllArgsConstructor
 public class Camera {
     private double x, y;
     @NonNull private GamePanel gp;
     @NonNull private Player player;
 
-    private final double HORIZONTAL_FOCAL_POINT = 160;
-    private final double VERTICAL_FOCAL_POINT = 96;
+    private double HORIZONTAL_FOCAL_POINT;
+    private double VERTICAL_FOCAL_POINT;
+    private double LEFT_BORDER;
+    private double RIGHT_BORDER;
+    private double TOP_BORDER;
+    private double BOTTOM_BORDER;
+
     private final double HORIZONTAL_SPEED_CAP = 16;
     private final double VERTICAL_SPEED_CAP = 16;
     private final double VERTICAL_SPEED_CAP_FAST = 24;
     private final double VERTICAL_SPEED_CAP_SLOW = 6;
-    private final double VERTICAL_SPEED_CAP_SHIFTED = 2 ;
+    private final double VERTICAL_SPEED_CAP_SHIFTED = 2;
 
-    private final double LEFT_BORDER = 144;
-    private final double RIGHT_BORDER = 160;
-    private final double TOP_BORDER = VERTICAL_FOCAL_POINT - 32;
-    private final double BOTTOM_BORDER = VERTICAL_FOCAL_POINT + 32;
+    public Camera(@NonNull GamePanel gp, @NonNull Player player) {
+        this.gp = gp;
+        this.player = player;
+
+        HORIZONTAL_FOCAL_POINT   = gp.getSCREEN_WIDTH()/2;
+        VERTICAL_FOCAL_POINT     = gp.getSCREEN_HEIGHT()/2;
+        LEFT_BORDER              = 144;
+        RIGHT_BORDER             = 160;
+        TOP_BORDER               = VERTICAL_FOCAL_POINT - 32;
+        BOTTOM_BORDER            = VERTICAL_FOCAL_POINT + 32;
+    }
 
     public void update() {
         double playerCenterX = player.getHitbox().getCenterX();
         double playerCenterY = player.getHitbox().getCenterY();
         double screenWidth = gp.getSCREEN_WIDTH();
         double screenHeight = gp.getSCREEN_HEIGHT();
+        HORIZONTAL_FOCAL_POINT   = gp.getSCREEN_WIDTH()/2;
+        VERTICAL_FOCAL_POINT     = gp.getSCREEN_HEIGHT()/2;
 
         // Horizontal camera movement
         double targetX = playerCenterX - screenWidth / 2;

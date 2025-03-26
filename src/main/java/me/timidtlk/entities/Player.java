@@ -174,7 +174,7 @@ public class Player extends Entity {
                     actualAnimation.reset();
                     actualAnimation.start();
                 }
-            } else if (controller.isDown() && Math.abs(speedX) > 1) {
+            } else if (controller.isDown() && Math.abs(speedX) > 1 && !rolling) {
                 actualAnimation.reset();
                 rolling = true;
             } else if (isRolling()) {
