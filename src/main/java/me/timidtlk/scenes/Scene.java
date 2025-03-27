@@ -8,13 +8,13 @@ import java.util.Stack;
 import lombok.Getter;
 import me.timidtlk.core.Camera;
 import me.timidtlk.core.GamePanel;
+import me.timidtlk.core.IGameLogic;
 import me.timidtlk.entities.Entity;
 import me.timidtlk.events.Event;
 import me.timidtlk.objects.GameObject;
-import me.timidtlk.utils.Drawable;
 
 @Getter
-public abstract class Scene implements Drawable {
+public abstract class Scene implements IGameLogic {
     protected HashMap<String, GameObject> objects;
     protected HashMap<String, Entity> entities;
     protected Stack<Event> events;
@@ -61,8 +61,8 @@ public abstract class Scene implements Drawable {
             entity.draw(g2);
         }
         if (!events.empty()) {
-            for (Event event : events) {
-                event.draw(g2);
+            for (int i = events.size()-1; i >= 0; i--) {
+                events.get(i).draw(g2);
             }
         }
 

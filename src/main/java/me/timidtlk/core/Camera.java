@@ -35,12 +35,12 @@ public class Camera {
         this.gp = gp;
         this.player = player;
 
-        HORIZONTAL_FOCAL_POINT   = gp.getSCREEN_WIDTH()/2;
-        VERTICAL_FOCAL_POINT     = gp.getSCREEN_HEIGHT()/2;
-        LEFT_BORDER              = 144;
-        RIGHT_BORDER             = 160;
-        TOP_BORDER               = VERTICAL_FOCAL_POINT - 32;
-        BOTTOM_BORDER            = VERTICAL_FOCAL_POINT + 32;
+        HORIZONTAL_FOCAL_POINT = gp.getSCREEN_WIDTH()/2;
+        VERTICAL_FOCAL_POINT   = gp.getSCREEN_HEIGHT()/2;
+        LEFT_BORDER            = 144;
+        RIGHT_BORDER           = 160;
+        TOP_BORDER             = VERTICAL_FOCAL_POINT - 32;
+        BOTTOM_BORDER          = VERTICAL_FOCAL_POINT + 32;
     }
 
     public void update() {
