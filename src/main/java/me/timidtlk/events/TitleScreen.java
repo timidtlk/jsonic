@@ -3,16 +3,29 @@ package me.timidtlk.events;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.IOError;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import me.timidtlk.core.GamePanel;
+import me.timidtlk.core.IGameLogic;
+import me.timidtlk.core.Sound;
 import me.timidtlk.core.animation.Sprite;
 import me.timidtlk.objects.BackgroundIntro;
+import me.timidtlk.objects.TitleSonic;
+import me.timidtlk.scenes.IntroScene;
+import me.timidtlk.scenes.TestLevel;
 
 public class TitleScreen extends Event {
     private BackgroundIntro[] backgroundIntros;
     private GamePanel gp;
+    private TitleSonic titleSonic;
+    private Sound song;
+    private PressStart pressStart;
     float alpha;
     float targetAlpha;
+    boolean played;
 
     public TitleScreen(GamePanel gp) {
         super();
@@ -20,6 +33,12 @@ public class TitleScreen extends Event {
         this.end = false;
         this.alpha = 0f;
         this.targetAlpha = 1f;
+
+        pressStart = new PressStart();
+        titleSonic = new TitleSonic();
+        song = new Sound();
+        song.setFile(4);
+        played = false;
 
         BufferedImage[] bgFrames0 = null;
         BufferedImage[] bgFrames1 = null;
@@ -49,6 +68,20 @@ public class TitleScreen extends Event {
     @Override
     public void update() {
         alpha = alpha + (targetAlpha - alpha) * .1f;
+        titleSonic.update();
+        pressStart.update();
+        if (!played) {
+            song.play();
+            played = true;
+        }
+        if (Math.ceil(alpha * 100) == Math.ceil(targetAlpha * 100)) {
+            titleSonic.actualAnimation.start();
+            if (gp.getController().isStart()) {
+                end = true;
+                song.stop();
+                gp.setActualScene(new TestLevel(gp));
+            }
+        }
         for (BackgroundIntro backgroundIntro : backgroundIntros) {
             backgroundIntro.update();
             if (backgroundIntro.getX() < -1024) {
@@ -64,6 +97,43 @@ public class TitleScreen extends Event {
         for(BackgroundIntro backgroundIntro : backgroundIntros) {
             backgroundIntro.draw(g2);
         }
+        titleSonic.draw(g2);
+        pressStart.draw(g2);
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+    }
+
+    private class PressStart implements IGameLogic {
+
+        int count;
+        boolean visible;
+        BufferedImage pressStartImage;
+
+        public PressStart() {
+            count = 0;
+            visible = false;
+
+            try {
+                pressStartImage = ImageIO.read(getClass().getClassLoader().getResourceAsStream("sprites/misc/press_start.png"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void update() {
+            count++;
+            if (count > 30) {
+                visible = !visible;
+                count = 0;
+            }
+        }
+
+        @Override
+        public void draw(Graphics2D g2) {
+            if (visible) {
+                g2.drawImage(pressStartImage, 80, 176, null);
+            }
+        }
+
     }
 }

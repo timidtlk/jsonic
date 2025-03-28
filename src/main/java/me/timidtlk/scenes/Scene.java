@@ -20,7 +20,7 @@ public abstract class Scene implements IGameLogic {
     protected Stack<Event> events;
     protected Camera camera;
     
-    private GamePanel gp;
+    protected GamePanel gp;
     public Scene(GamePanel gp) {
         this.gp = gp;
         objects = new HashMap<>();

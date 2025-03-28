@@ -13,12 +13,14 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.timidtlk.entities.Player;
 import me.timidtlk.scenes.Scene;
 import me.timidtlk.scenes.IntroScene;
 import me.timidtlk.scenes.TestLevel;
 
 @Getter
+@Setter
 public class GamePanel extends JPanel implements Runnable {
     
     private final int SCREEN_WIDTH = 320;
