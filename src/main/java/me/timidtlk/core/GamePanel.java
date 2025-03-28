@@ -137,12 +137,7 @@ public class GamePanel extends JPanel implements Runnable {
         int offsetX = (windowWidth - scaledWidth) / 2;
         int offsetY = (windowHeight - scaledHeight) / 2;
 
-        // Fill the black bars
-        g2.setColor(Color.BLACK);
-        g2.fillRect(0, 0, windowWidth, offsetY); // Top bar
-        g2.fillRect(0, offsetY + scaledHeight, windowWidth, windowHeight - offsetY - scaledHeight); // Bottom bar
-        g2.fillRect(0, offsetY, offsetX, scaledHeight); // Left bar
-        g2.fillRect(offsetX + scaledWidth, offsetY, windowWidth - offsetX - scaledWidth, scaledHeight); // Right bar
+        var trans = g2.getTransform();
 
         // Scale and translate the game content
         g2.translate(offsetX, offsetY);
@@ -152,6 +147,16 @@ public class GamePanel extends JPanel implements Runnable {
         renderGame(g2);
 
         // Reset transformations
+        g2.setTransform(trans);
+
+        // Fill the black bars
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, windowWidth, offsetY); // Top bar
+        g2.fillRect(0, offsetY + scaledHeight, windowWidth, windowHeight - offsetY - scaledHeight); // Bottom bar
+        g2.fillRect(0, offsetY, offsetX, scaledHeight); // Left bar
+        g2.fillRect(offsetX + scaledWidth, offsetY, windowWidth - offsetX - scaledWidth, scaledHeight); // Right bar
+        
+        // Dispose of the graphics context
         g2.dispose();
     }
 }
